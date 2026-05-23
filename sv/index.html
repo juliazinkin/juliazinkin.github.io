@@ -385,120 +385,306 @@
 const connections = [
   {
     id: 1,
-    name: "Alex Chen",
-    role: "Product Manager",
-    company: "Google",
-    linkedin: "https://linkedin.com/in/placeholder",
-    quote: "The best PMs are translators — they speak both engineer and business fluently.",
-    photo: null,   // replace with path or URL to a headshot
-    lat: 37.4220, lng: -122.0841,
+    name: "Lauren Hasson",
+    role: "Speaker, Software Engineer",
+    company: "Independent",
+    linkedin: null,
+    quote: "Met in person at her keynote — hackathon speaker and DTech inspiration.",
+    photo: null,
+    lat: 37.4400, lng: -122.1600,
     color: "lavender"
   },
   {
     id: 2,
-    name: "Morgan Lee",
-    role: "Senior Engineer",
-    company: "Meta",
-    linkedin: "https://linkedin.com/in/placeholder",
-    quote: "Ship fast and learn faster. Perfect is the enemy of launched.",
+    name: "Matt Jaynes",
+    role: "Engineer",
+    company: "Joby Aviation",
+    linkedin: null,
+    quote: "Engineer building the future of electric aviation.",
     photo: null,
-    lat: 37.4842, lng: -122.1493,
-    color: "sage"
+    lat: 37.5072, lng: -122.2605,
+    color: "peach"
   },
   {
     id: 3,
-    name: "Jordan Rivera",
-    role: "Venture Partner",
-    company: "Sequoia Capital",
-    linkedin: "https://linkedin.com/in/placeholder",
-    quote: "We don't invest in ideas. We invest in founders who won't stop.",
+    name: "Alyssa Ting",
+    role: "Product Manager",
+    company: "YouTube / Google",
+    linkedin: null,
+    quote: "Met in person at YouTube HQ — connected by text!",
     photo: null,
-    lat: 37.4220, lng: -122.1980,
+    lat: 37.6310, lng: -122.4115,
     color: "blush"
   },
   {
     id: 4,
-    name: "Sam Patel",
-    role: "Co-founder & CEO",
-    company: "Stealth Startup",
-    linkedin: "https://linkedin.com/in/placeholder",
-    quote: "Your first 10 customers teach you more than any MBA class ever could.",
+    name: "Alejandro Ortega",
+    role: "Software Engineer",
+    company: "YouTube / Google",
+    linkedin: null,
+    quote: "SWE at YouTube/Google. Met through the DSV program.",
     photo: null,
-    lat: 37.7985, lng: -122.4079,
-    color: "yellow"
+    lat: 37.6298, lng: -122.4118,
+    color: "lavender"
   },
   {
     id: 5,
-    name: "Dr. Casey Kim",
-    role: "Professor",
-    company: "Stanford",
-    linkedin: "https://linkedin.com/in/placeholder",
-    quote: "Sustainable enterprises solve real problems — not imaginary ones.",
+    name: "Aman Singh",
+    role: "Software Engineer",
+    company: "YouTube / Google",
+    linkedin: null,
+    quote: "SWE at YouTube/Google. Met through the DSV program.",
     photo: null,
-    lat: 37.4275, lng: -122.1697,
-    color: "peach"
+    lat: 37.6314, lng: -122.4103,
+    color: "sage"
   },
   {
     id: 6,
-    name: "Taylor Brooks",
-    role: "Head of Design",
-    company: "Salesforce",
-    linkedin: "https://linkedin.com/in/placeholder",
-    quote: "Design isn't decoration — it's how you make a promise to your user.",
+    name: "Rachel Bransom",
+    role: "Software Engineer",
+    company: "YouTube / Google",
+    linkedin: null,
+    quote: "SWE at YouTube/Google. Met through the DSV program.",
     photo: null,
-    lat: 37.7946, lng: -122.3951,
+    lat: 37.6295, lng: -122.4102,
+    color: "yellow"
+  },
+  {
+    id: 7,
+    name: "Kai Tang",
+    role: "Software Engineer (Intern)",
+    company: "YouTube / Google",
+    linkedin: null,
+    quote: "Duke student interning at YouTube — small world!",
+    photo: null,
+    lat: 37.6306, lng: -122.4125,
     color: "sky"
+  },
+  {
+    id: 8,
+    name: "Shruti Haldea",
+    role: "PM, Marketing",
+    company: "Stealth Startup",
+    linkedin: null,
+    quote: "Guest speaker in SV — PM experience across Apple and Sonos, now building something new in stealth.",
+    photo: null,
+    lat: 37.4300, lng: -122.1750,
+    color: "sage"
+  },
+  {
+    id: 9,
+    name: "Yvonne Kuo",
+    role: "Product Manager",
+    company: "LinkedIn",
+    linkedin: null,
+    quote: "PM at LinkedIn. Met through the DTech & SV program.",
+    photo: null,
+    lat: 37.3632, lng: -122.0292,
+    color: "sky"
+  },
+  {
+    id: 10,
+    name: "Crystal Bell",
+    role: "Staff Software Engineer",
+    company: "LinkedIn",
+    linkedin: null,
+    quote: "Staff Software Engineer at LinkedIn. Met through the DSV program.",
+    photo: null,
+    lat: 37.3620, lng: -122.0282,
+    color: "blush"
+  },
+  {
+    id: 11,
+    name: "Rushabh Shah",
+    role: "Product Manager",
+    company: "LinkedIn",
+    linkedin: null,
+    quote: "PM at LinkedIn. Met through the DSV program.",
+    photo: null,
+    lat: 37.3634, lng: -122.0298,
+    color: "sage"
+  },
+  {
+    id: 12,
+    name: "Ariel Li",
+    role: "Strategic Finance",
+    company: "LinkedIn",
+    linkedin: null,
+    quote: "Strategic Finance at LinkedIn. Met through the DSV program.",
+    photo: null,
+    lat: 37.3618, lng: -122.0276,
+    color: "yellow"
+  },
+  {
+    id: 13,
+    name: "Tommy Hessel",
+    role: "Product Manager",
+    company: "Scale AI",
+    linkedin: null,
+    quote: "PM at Scale AI, formerly EY-Parthenon. Met through DSV.",
+    photo: null,
+    lat: 37.7879, lng: -122.3987,
+    color: "lavender"
+  },
+  {
+    id: 14,
+    name: "Nadine Vish",
+    role: "Product Manager",
+    company: "Abridge",
+    linkedin: null,
+    quote: "So sweet and so smart — one of the best people I met on the whole trip!",
+    photo: null,
+    lat: 37.7853, lng: -122.4098,
+    color: "sage"
+  },
+  {
+    id: 15,
+    name: "Julia Chou",
+    role: "COO",
+    company: "Abridge",
+    linkedin: null,
+    quote: "COO at Abridge, formerly at Google.",
+    photo: null,
+    lat: 37.7843, lng: -122.4088,
+    color: "blush"
+  },
+  {
+    id: 16,
+    name: "Catherine Wood",
+    role: "Product Manager",
+    company: "Skydio",
+    linkedin: null,
+    quote: "Got coffee in person — PM at Skydio, the autonomous drone company!",
+    photo: null,
+    lat: 37.4852, lng: -122.2364,
+    color: "yellow"
+  },
+  {
+    id: 17,
+    name: "Gabrielle Wiggins",
+    role: "Product Manager",
+    company: "WNBA",
+    linkedin: null,
+    quote: "Got coffee in person — PM at the WNBA!",
+    photo: null,
+    lat: 37.7800, lng: -122.4100,
+    color: "blush"
+  },
+  {
+    id: 18,
+    name: "Allyson Merrigan",
+    role: "Product Manager",
+    company: "LinkedIn",
+    linkedin: null,
+    quote: "Had a phone call — PM at LinkedIn, formerly EY-Parthenon.",
+    photo: null,
+    lat: 37.3638, lng: -122.0290,
+    color: "sky"
+  },
+  {
+    id: 19,
+    name: "Summer Smith",
+    role: "Product Manager",
+    company: "Microsoft",
+    linkedin: null,
+    quote: "PM at Microsoft. Met through the DTech program.",
+    photo: null,
+    lat: 37.4030, lng: -122.1100,
+    color: "lavender"
+  },
+  {
+    id: 20,
+    name: "Mariam Sulakian",
+    role: "CTO, Founder, PM",
+    company: "Filevine",
+    linkedin: null,
+    quote: "DTech speaker — Founder & CTO with a background at Meta and GitHub. Incredibly inspiring.",
+    photo: null,
+    lat: 37.4420, lng: -122.1430,
+    color: "blush"
   },
 ];
 
 const companies = [
   {
-    name: "Google",
+    name: "YouTube / Google",
     type: "Big Tech",
-    icon: "🔍",
-    note: "Toured the Googleplex and learned about their PM culture — data informs every decision, but instinct still matters.",
-    bg: "#E8F5E9", color: "#2E7D32",
-    lat: 37.4220, lng: -122.0841
+    icon: "▶️",
+    note: "Visited YouTube HQ in San Bruno — met 5 engineers and PMs and got an inside look at product culture at Google.",
+    bg: "#FCE4EC", color: "#C62828",
+    lat: 37.6304, lng: -122.4110
   },
   {
-    name: "Meta",
-    type: "Big Tech",
-    icon: "👥",
-    note: "Fascinating talk on scaling social products and the hard choices that come with billions of users.",
+    name: "LinkedIn",
+    type: "Professional Network",
+    icon: "💼",
+    note: "Met the LinkedIn team in Sunnyvale — PMs, engineers, and finance all in one visit. Great conversations about building at scale.",
     bg: "#E3F2FD", color: "#1565C0",
-    lat: 37.4842, lng: -122.1493
+    lat: 37.3626, lng: -122.0286
   },
   {
-    name: "Sequoia Capital",
-    type: "Venture Capital",
-    icon: "💰",
-    note: "Sand Hill Road is different than I imagined — quieter, more deliberate. Learned how VCs think about founder-market fit.",
+    name: "Abridge",
+    type: "AI Healthcare Startup",
+    icon: "🩺",
+    note: "Met Nadine and Julia at Abridge — an AI startup transforming clinical documentation. Two of the most impressive people on the trip.",
+    bg: "#E8F5E9", color: "#2E7D32",
+    lat: 37.7849, lng: -122.4094
+  },
+  {
+    name: "Joby Aviation",
+    type: "Electric Aviation",
+    icon: "✈️",
+    note: "Met Matt who is building the future of urban air mobility — electric air taxis are closer than you think.",
     bg: "#FFF3E0", color: "#E65100",
-    lat: 37.4220, lng: -122.1980
+    lat: 37.5072, lng: -122.2605
   },
   {
-    name: "Y Combinator",
-    type: "Accelerator",
-    icon: "🚀",
-    note: "Attended Demo Day. The energy in that room — hundreds of founders pitching their life's work — is electric.",
-    bg: "#FCE4EC", color: "#880E4F",
-    lat: 37.7985, lng: -122.4079
-  },
-  {
-    name: "Stanford University",
-    type: "University",
-    icon: "📚",
-    note: "Home base for the program. The d.school visit changed how I think about problem framing entirely.",
+    name: "Scale AI",
+    type: "AI Infrastructure",
+    icon: "🤖",
+    note: "Met Tommy at Scale AI — building the data infrastructure powering the world's biggest AI models.",
     bg: "#F3E5F5", color: "#6A1B9A",
-    lat: 37.4275, lng: -122.1697
+    lat: 37.7879, lng: -122.3987
   },
   {
-    name: "Salesforce",
-    type: "Enterprise Tech",
-    icon: "☁️",
-    note: "Explored how a company scales from startup to enterprise while keeping a distinct culture intact.",
+    name: "Skydio",
+    type: "Drone Technology",
+    icon: "🚁",
+    note: "Got coffee with Catherine Wood — PM at Skydio, building autonomous American drones for defense and enterprise.",
     bg: "#E1F5FE", color: "#01579B",
-    lat: 37.7946, lng: -122.3951
+    lat: 37.4852, lng: -122.2364
+  },
+  {
+    name: "Microsoft",
+    type: "Big Tech",
+    icon: "🪟",
+    note: "Connected with Summer Smith, PM at Microsoft — exploring the intersection of AI and product management.",
+    bg: "#E8F5E9", color: "#1B5E20",
+    lat: 37.4030, lng: -122.1100
+  },
+  {
+    name: "Filevine",
+    type: "Legal Tech",
+    icon: "⚖️",
+    note: "Mariam Sulakian was a DTech speaker — Founder and CTO with a background at Meta and GitHub. One of the most inspiring talks.",
+    bg: "#FFF9C4", color: "#F57F17",
+    lat: 37.4420, lng: -122.1430
+  },
+  {
+    name: "WNBA",
+    type: "Professional Sports",
+    icon: "🏀",
+    note: "Got coffee with Gabrielle Wiggins, PM at the WNBA — an unconventional path into product that was genuinely eye-opening.",
+    bg: "#FCE4EC", color: "#880E4F",
+    lat: 37.7800, lng: -122.4150
+  },
+  {
+    name: "Stealth Startup",
+    type: "Early Stage",
+    icon: "🤫",
+    note: "Shruti Haldea — guest speaker with PM experience at Apple and Sonos, now building something new. Watch this space.",
+    bg: "#EDE7F6", color: "#4527A0",
+    lat: 37.4300, lng: -122.1750
   },
 ];
 
@@ -563,10 +749,10 @@ function initMap() {
         </div>
         <span class="popup-badge" style="background:${p.bg};color:${p.text}">${c.company}</span>
         <div class="popup-quote">"${c.quote}"</div>
-        <a class="popup-linkedin" href="${c.linkedin}" target="_blank">
+        ${c.linkedin ? `<a class="popup-linkedin" href="${c.linkedin}" target="_blank">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
           LinkedIn
-        </a>
+        </a>` : ''}
       </div>`, { maxWidth: 300 });
   });
 
@@ -638,10 +824,10 @@ function renderConnections() {
         <div class="card-role">${c.role}</div>
         <span class="card-company-badge" style="background:${p.bg};color:${p.text}">${c.company}</span>
         <div class="card-quote">"${c.quote}"</div>
-        <a class="card-linkedin" href="${c.linkedin}" target="_blank" onclick="event.stopPropagation()">
+        ${c.linkedin ? `<a class="card-linkedin" href="${c.linkedin}" target="_blank" onclick="event.stopPropagation()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="#0077B5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
           LinkedIn
-        </a>
+        </a>` : ''}
       </div>`;
   }).join('');
 }
@@ -662,10 +848,10 @@ function openModal(id) {
     <span class="modal-badge" style="background:${p.bg};color:${p.text}">${c.company}</span>
     <div class="modal-quote">"${c.quote}"</div>
     <div class="modal-actions">
-      <a class="btn-linkedin" href="${c.linkedin}" target="_blank">
+      ${c.linkedin ? `<a class="btn-linkedin" href="${c.linkedin}" target="_blank">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
         View on LinkedIn
-      </a>
+      </a>` : ''}
       <button class="btn-map" onclick="flyToPin(${c.lat},${c.lng}); closeModal()">📍 Find on map</button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
