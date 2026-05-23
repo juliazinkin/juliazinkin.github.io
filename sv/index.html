@@ -234,48 +234,6 @@
     .company-type { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600; margin-bottom: 0.65rem; opacity: 0.7; }
     .company-note { font-size: 0.84rem; line-height: 1.65; opacity: 0.88; }
 
-    /* ── LESSONS ── */
-    #lessons { background: var(--lavender); }
-    .lessons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.6rem; }
-    .sticky-note {
-      padding: 1.5rem; border-radius: 3px;
-      box-shadow: 3px 5px 14px rgba(0,0,0,0.11), 0 0 0 1px rgba(0,0,0,0.03);
-      font-family: 'Caveat', cursive; font-size: 1.18rem; line-height: 1.55;
-      position: relative; transition: transform 0.22s, box-shadow 0.22s;
-    }
-    .sticky-note:nth-child(odd)  { transform: rotate(-1.6deg); }
-    .sticky-note:nth-child(even) { transform: rotate(1.1deg); }
-    .sticky-note:hover { transform: rotate(0deg) scale(1.04); box-shadow: 6px 10px 24px rgba(0,0,0,0.16); z-index: 2; }
-    .sticky-note::before {
-      content: '';
-      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-      width: 38px; height: 11px;
-      background: rgba(255,255,255,0.48); border-radius: 0 0 4px 4px;
-    }
-    .sticky-attr { display: block; font-size: 0.88rem; margin-top: 0.75rem; opacity: 0.65; }
-
-    /* ── PHOTOS ── */
-    #photos { background: var(--cream); }
-    .photo-grid { columns: 3; column-gap: 1.2rem; }
-    @media (max-width: 768px) { .photo-grid { columns: 2; } }
-    @media (max-width: 480px) { .photo-grid { columns: 1; } }
-    .photo-item { break-inside: avoid; margin-bottom: 1.2rem; }
-    .polaroid {
-      background: white; padding: 0.7rem 0.7rem 2.4rem;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.1);
-      transition: transform 0.22s, box-shadow 0.22s;
-    }
-    .photo-item:nth-child(3n+1) .polaroid { transform: rotate(-1.8deg); }
-    .photo-item:nth-child(3n+2) .polaroid { transform: rotate(1.2deg); }
-    .photo-item:nth-child(3n)   .polaroid { transform: rotate(-0.5deg); }
-    .photo-item:hover .polaroid { transform: rotate(0deg) scale(1.03); box-shadow: 0 12px 36px rgba(0,0,0,0.14); }
-    .polaroid img { width: 100%; display: block; object-fit: cover; aspect-ratio: 4/3; }
-    .photo-placeholder {
-      width: 100%; aspect-ratio: 4/3;
-      display: flex; align-items: center; justify-content: center; font-size: 2.8rem;
-    }
-    .photo-caption { font-family: 'Caveat', cursive; font-size: 1rem; text-align: center; padding-top: 0.4rem; color: var(--text); }
-
     /* ── FOOTER ── */
     footer {
       background: #2a2a2a; color: rgba(255,255,255,0.65);
@@ -352,8 +310,6 @@
     <li><a href="#map-section">Map</a></li>
     <li><a href="#connections">Connections</a></li>
     <li><a href="#companies">Companies</a></li>
-    <li><a href="#lessons">Lessons</a></li>
-    <li><a href="#photos">Photos</a></li>
   </ul>
 </nav>
 
@@ -408,26 +364,6 @@
     <div class="section-title">Companies &amp; Places</div>
   </div>
   <div class="companies-grid" id="companies-grid"></div>
-</section>
-
-<!-- LESSONS -->
-<section id="lessons">
-  <div class="section-header">
-    <div class="section-tag">Takeaways</div>
-    <div class="section-title">Things That Stuck</div>
-    <p class="section-sub">Quotes, frameworks, and moments I want to carry forward.</p>
-  </div>
-  <div class="lessons-grid" id="lessons-grid"></div>
-</section>
-
-<!-- PHOTOS -->
-<section id="photos">
-  <div class="section-header">
-    <div class="section-tag">Moments</div>
-    <div class="section-title">The Gallery</div>
-    <p class="section-sub">Swap in your own photos by replacing the src fields in the data below.</p>
-  </div>
-  <div class="photo-grid" id="photo-grid"></div>
 </section>
 
 <!-- FOOTER -->
@@ -564,30 +500,6 @@ const companies = [
     bg: "#E1F5FE", color: "#01579B",
     lat: 37.7946, lng: -122.3951
   },
-];
-
-const lessons = [
-  { text: "PMF isn't a destination — it's a signal you keep re-earning as you grow.", attr: "— YC partner talk", bg: "#FFF9C4" },
-  { text: "The best product decisions start with 'what problem are we really solving?'", attr: "— Stanford d.school workshop", bg: "#E8D5F5" },
-  { text: "Speed is a competitive advantage. Urgency is a culture, not a deadline.", attr: "— startup founder panel", bg: "#C8E6C9" },
-  { text: "Your network is the compound interest of your career.", attr: "— networking session", bg: "#FADADD" },
-  { text: "A great PM has strong opinions, held loosely.", attr: "— Google PM talk", bg: "#FFE0B2" },
-  { text: "Don't optimize for the outcome — optimize for the process that gets you there.", attr: "— VC office hours", bg: "#B3E5FC" },
-  { text: "Every 'no' in fundraising is data. Decode it.", attr: "— Sequoia partner", bg: "#FFF9C4" },
-  { text: "Users don't buy products. They buy better versions of themselves.", attr: "— design sprint", bg: "#E8D5F5" },
-];
-
-// Each photo: set src to a file path or URL (e.g. "../photos/day1.jpg"), or leave null for emoji placeholder
-const photos = [
-  { src: null, caption: "Day 1 — arriving at Stanford 🌴", emoji: "🌴", bg: "#E8D5F5" },
-  { src: null, caption: "The Googleplex campus tour", emoji: "🏢", bg: "#C8E6C9" },
-  { src: null, caption: "YC Demo Day energy", emoji: "🚀", bg: "#FADADD" },
-  { src: null, caption: "Sand Hill Road walk", emoji: "💰", bg: "#FFF9C4" },
-  { src: null, caption: "Late-night ideas at CoHo", emoji: "☕", bg: "#FFE0B2" },
-  { src: null, caption: "d.school design sprint", emoji: "🎨", bg: "#B3E5FC" },
-  { src: null, caption: "View from Twin Peaks, SF", emoji: "🌉", bg: "#E8D5F5" },
-  { src: null, caption: "Cohort dinner — unforgettable people", emoji: "🍽️", bg: "#C8E6C9" },
-  { src: null, caption: "Final presentation day", emoji: "🎤", bg: "#FADADD" },
 ];
 
 // ─────────────────────────────────────────────────────────
@@ -784,35 +696,6 @@ function renderCompanies() {
 }
 
 // ─────────────────────────────────────────────────────────
-//  LESSONS
-// ─────────────────────────────────────────────────────────
-
-function renderLessons() {
-  document.getElementById('lessons-grid').innerHTML = lessons.map(l => `
-    <div class="sticky-note" style="background:${l.bg}">
-      "${l.text}"
-      <span class="sticky-attr">${l.attr}</span>
-    </div>`).join('');
-}
-
-// ─────────────────────────────────────────────────────────
-//  PHOTOS
-// ─────────────────────────────────────────────────────────
-
-function renderPhotos() {
-  document.getElementById('photo-grid').innerHTML = photos.map(p => `
-    <div class="photo-item">
-      <div class="polaroid">
-        ${p.src
-          ? `<img src="${p.src}" alt="${p.caption}" />`
-          : `<div class="photo-placeholder" style="background:linear-gradient(135deg,${p.bg},#fff)">${p.emoji}</div>`
-        }
-        <div class="photo-caption">${p.caption}</div>
-      </div>
-    </div>`).join('');
-}
-
-// ─────────────────────────────────────────────────────────
 //  ANIMATED COUNTERS
 // ─────────────────────────────────────────────────────────
 
@@ -834,8 +717,6 @@ document.addEventListener('DOMContentLoaded', () => {
   buildFilterButtons();
   renderConnections();
   renderCompanies();
-  renderLessons();
-  renderPhotos();
   initMap();
 
   setTimeout(() => {
