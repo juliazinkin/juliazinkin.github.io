@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Silicon Valley Journey · Julia Zinkin</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --lavender:      #E8D5F5;
+      --lavender-dark: #C9A8E8;
+      --sage:          #C8E6C9;
+      --sage-dark:     #A5D6A7;
+      --blush:         #FADADD;
+      --blush-dark:    #F8BBD9;
+      --yellow:        #FFF9C4;
+      --yellow-dark:   #FFF176;
+      --peach:         #FFE0B2;
+      --sky:           #B3E5FC;
+      --cream:         #FAFAF7;
+      --text:          #2D2D2D;
+      --text-light:    #777;
+      --border:        #E5E5E5;
+      --purple:        #7C4DA0;
+      --purple-dark:   #4A2060;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      padding: 1rem 5vw;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 1000;
+    }
+    .nav-back {
+      font-family: 'Caveat', cursive; font-size: 1.1rem;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--purple); }
+    .nav-title { font-family: 'Caveat', cursive; font-size: 1.3rem; font-weight: 700; color: var(--purple); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { font-size: 0.82rem; color: var(--text-light); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--purple); }
+    @media (max-width: 640px) { .nav-links { display: none; } }
+
+    /* ── HERO ── */
+    .hero {
+      margin-top: 60px;
+      padding: 5rem 5vw 4rem;
+      background: linear-gradient(135deg, var(--lavender) 0%, var(--blush) 50%, var(--sky) 100%);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-tag {
+      display: inline-block;
+      background: white; color: var(--purple);
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.4rem 1.1rem; border-radius: 100px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 700; color: var(--purple-dark);
+      line-height: 1.1; margin-bottom: 1rem;
+    }
+    .hero h1 span { color: var(--purple); }
+    .hero p {
+      font-size: 1.05rem; color: #555;
+      max-width: 520px; margin: 0 auto 2.5rem;
+      line-height: 1.75;
+    }
+    .hero-stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-number {
+      font-family: 'Caveat', cursive; font-size: 2.8rem;
+      font-weight: 700; color: var(--purple-dark); line-height: 1;
+    }
+    .stat-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.2rem; }
+
+    /* ── SECTION SHELL ── */
+    section { padding: 5rem 5vw; }
+    .section-header { margin-bottom: 2.5rem; }
+    .section-tag { font-size: 0.73rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--purple); margin-bottom: 0.4rem; }
+    .section-title { font-family: 'Caveat', cursive; font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; color: var(--text); }
+    .section-sub { color: var(--text-light); margin-top: 0.4rem; font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── MAP ── */
+    #map-section { background: white; }
+    #map {
+      height: 520px; border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.11);
+      overflow: hidden;
+    }
+    @media (max-width: 640px) { #map { height: 340px; } }
+    .map-legend { display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text-light); }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Leaflet popup override */
+    .leaflet-popup-content-wrapper { border-radius: 16px !important; box-shadow: 0 12px 40px rgba(0,0,0,0.15) !important; padding: 0 !important; overflow: hidden; }
+    .leaflet-popup-content { margin: 0 !important; width: 280px !important; }
+    .popup-card { padding: 1.2rem; }
+    .popup-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .popup-avatar {
+      width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Caveat', cursive; font-size: 1.1rem; font-weight: 700;
+    }
+    .popup-name { font-weight: 600; font-size: 0.92rem; }
+    .popup-role { font-size: 0.78rem; color: var(--text-light); }
+    .popup-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.73rem; font-weight: 600;
+      padding: 0.22rem 0.6rem; border-radius: 100px; margin-bottom: 0.6rem;
+    }
+    .popup-quote {
+      font-size: 0.8rem; color: #555; line-height: 1.55;
+      border-left: 3px solid var(--lavender-dark);
+      padding-left: 0.6rem; font-style: italic; margin-bottom: 0.8rem;
+    }
+    .popup-linkedin {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: #0077B5; color: white;
+      font-size: 0.73rem; font-weight: 600;
+      padding: 0.32rem 0.75rem; border-radius: 8px;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .popup-linkedin:hover { opacity: 0.82; }
+
+    /* ── CONNECTIONS ── */
+    #connections { background: var(--cream); }
+    .search-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    .search-box {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: white; border: 2px solid var(--border);
+      border-radius: 100px; padding: 0.45rem 1rem;
+      max-width: 280px; flex: 1;
+      transition: border-color 0.2s;
+    }
+    .search-box:focus-within { border-color: var(--lavender-dark); }
+    .search-box input { border: none; outline: none; font-size: 0.85rem; color: var(--text); width: 100%; background: transparent; }
+    .filter-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .filter-btn {
+      background: white; border: 2px solid var(--border); color: var(--text-light);
+      padding: 0.38rem 0.9rem; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--lavender); border-color: var(--lavender-dark); color: var(--purple);
+    }
+    .connections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 2rem;
+    }
+    .connection-card {
+      background: white; border-radius: 12px; padding: 1.4rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      transition: transform 0.22s, box-shadow 0.22s;
+      cursor: pointer; position: relative;
+    }
+    .connection-card:nth-child(3n+1) { transform: rotate(-0.9deg); }
+    .connection-card:nth-child(3n+2) { transform: rotate(0.7deg); }
+    .connection-card:nth-child(3n)   { transform: rotate(-0.4deg); }
+    .connection-card:hover { transform: rotate(0deg) translateY(-5px) scale(1.02); box-shadow: 0 14px 36px rgba(0,0,0,0.12); }
+    .cc-lavender { border-top: 4px solid var(--lavender-dark); }
+    .cc-sage     { border-top: 4px solid var(--sage-dark); }
+    .cc-blush    { border-top: 4px solid var(--blush-dark); }
+    .cc-yellow   { border-top: 4px solid var(--yellow-dark); }
+    .cc-peach    { border-top: 4px solid #FFCC80; }
+    .cc-sky      { border-top: 4px solid #81D4FA; }
+    .card-avatar {
+      width: 58px; height: 58px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Caveat', cursive; font-size: 1.45rem; font-weight: 700;
+      margin-bottom: 1rem; overflow: hidden;
+    }
+    .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .card-name { font-weight: 600; font-size: 0.98rem; margin-bottom: 0.15rem; }
+    .card-role { font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.45rem; }
+    .card-company-badge {
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      padding: 0.18rem 0.55rem; border-radius: 100px; margin-bottom: 0.75rem;
+    }
+    .card-quote {
+      font-size: 0.79rem; color: var(--text-light); font-style: italic;
+      line-height: 1.55; border-left: 2px solid var(--lavender-dark);
+      padding-left: 0.5rem; margin-bottom: 0.9rem;
+    }
+    .card-linkedin {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      color: #0077B5; font-size: 0.76rem; font-weight: 600;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .card-linkedin:hover { opacity: 0.65; }
+
+    /* ── COMPANIES ── */
+    #companies { background: white; }
+    .companies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 1.4rem; }
+    .company-card {
+      border-radius: 16px; padding: 1.75rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .company-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+    .company-icon { font-size: 2.4rem; margin-bottom: 0.9rem; }
+    .company-name { font-weight: 700; font-size: 1.08rem; margin-bottom: 0.2rem; }
+    .company-type { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600; margin-bottom: 0.65rem; opacity: 0.7; }
+    .company-note { font-size: 0.84rem; line-height: 1.65; opacity: 0.88; }
+
+    /* ── LESSONS ── */
+    #lessons { background: var(--lavender); }
+    .lessons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.6rem; }
+    .sticky-note {
+      padding: 1.5rem; border-radius: 3px;
+      box-shadow: 3px 5px 14px rgba(0,0,0,0.11), 0 0 0 1px rgba(0,0,0,0.03);
+      font-family: 'Caveat', cursive; font-size: 1.18rem; line-height: 1.55;
+      position: relative; transition: transform 0.22s, box-shadow 0.22s;
+    }
+    .sticky-note:nth-child(odd)  { transform: rotate(-1.6deg); }
+    .sticky-note:nth-child(even) { transform: rotate(1.1deg); }
+    .sticky-note:hover { transform: rotate(0deg) scale(1.04); box-shadow: 6px 10px 24px rgba(0,0,0,0.16); z-index: 2; }
+    .sticky-note::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 38px; height: 11px;
+      background: rgba(255,255,255,0.48); border-radius: 0 0 4px 4px;
+    }
+    .sticky-attr { display: block; font-size: 0.88rem; margin-top: 0.75rem; opacity: 0.65; }
+
+    /* ── PHOTOS ── */
+    #photos { background: var(--cream); }
+    .photo-grid { columns: 3; column-gap: 1.2rem; }
+    @media (max-width: 768px) { .photo-grid { columns: 2; } }
+    @media (max-width: 480px) { .photo-grid { columns: 1; } }
+    .photo-item { break-inside: avoid; margin-bottom: 1.2rem; }
+    .polaroid {
+      background: white; padding: 0.7rem 0.7rem 2.4rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+      transition: transform 0.22s, box-shadow 0.22s;
+    }
+    .photo-item:nth-child(3n+1) .polaroid { transform: rotate(-1.8deg); }
+    .photo-item:nth-child(3n+2) .polaroid { transform: rotate(1.2deg); }
+    .photo-item:nth-child(3n)   .polaroid { transform: rotate(-0.5deg); }
+    .photo-item:hover .polaroid { transform: rotate(0deg) scale(1.03); box-shadow: 0 12px 36px rgba(0,0,0,0.14); }
+    .polaroid img { width: 100%; display: block; object-fit: cover; aspect-ratio: 4/3; }
+    .photo-placeholder {
+      width: 100%; aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center; font-size: 2.8rem;
+    }
+    .photo-caption { font-family: 'Caveat', cursive; font-size: 1rem; text-align: center; padding-top: 0.4rem; color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #2a2a2a; color: rgba(255,255,255,0.65);
+      text-align: center; padding: 2.5rem 5vw; font-size: 0.83rem;
+    }
+    footer a { color: var(--lavender); text-decoration: none; }
+    footer a:hover { color: white; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.48); z-index: 2000;
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white; border-radius: 20px; padding: 2rem;
+      max-width: 460px; width: 100%; position: relative;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+      animation: modal-in 0.22s ease;
+    }
+    @keyframes modal-in { from { opacity:0; transform:scale(0.95) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none; font-size: 1.3rem;
+      cursor: pointer; color: var(--text-light); line-height: 1; transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-avatar {
+      width: 78px; height: 78px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Caveat', cursive; font-size: 1.9rem; font-weight: 700;
+      margin-bottom: 1rem; overflow: hidden;
+    }
+    .modal-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-name { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .modal-role { color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.7rem; }
+    .modal-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.32rem 0.8rem; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;
+    }
+    .modal-quote {
+      background: var(--cream); border-left: 4px solid var(--lavender-dark);
+      padding: 1rem; border-radius: 0 8px 8px 0;
+      font-style: italic; color: var(--text); line-height: 1.65;
+      margin-bottom: 1.25rem;
+    }
+    .modal-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .btn-linkedin {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: #0077B5; color: white;
+      padding: 0.58rem 1.15rem; border-radius: 10px;
+      font-size: 0.83rem; font-weight: 600; text-decoration: none; transition: opacity 0.2s;
+    }
+    .btn-linkedin:hover { opacity: 0.82; }
+    .btn-map {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--lavender); color: var(--purple);
+      padding: 0.58rem 1.15rem; border-radius: 10px;
+      font-size: 0.83rem; font-weight: 600;
+      border: none; cursor: pointer; transition: background 0.2s;
+    }
+    .btn-map:hover { background: var(--lavender-dark); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-back">← Julia Zinkin</a>
+  <span class="nav-title">Silicon Valley '26</span>
+  <ul class="nav-links">
+    <li><a href="#map-section">Map</a></li>
+    <li><a href="#connections">Connections</a></li>
+    <li><a href="#companies">Companies</a></li>
+    <li><a href="#lessons">Lessons</a></li>
+    <li><a href="#photos">Photos</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">May 2026 · Stanford / Silicon Valley</div>
+  <h1>Building &amp; Sustaining<br/><span>a Successful Enterprise</span></h1>
+  <p>One month embedded in the world's most iconic startup ecosystem — learning, connecting, and exploring what it takes to build something that lasts.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-number" id="stat-connections">0</div><div class="stat-label">Connections</div></div>
+    <div class="stat"><div class="stat-number" id="stat-companies">0</div><div class="stat-label">Companies</div></div>
+    <div class="stat"><div class="stat-number">30</div><div class="stat-label">Days</div></div>
+    <div class="stat"><div class="stat-number">∞</div><div class="stat-label">Ideas</div></div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section id="map-section">
+  <div class="section-header">
+    <div class="section-tag">Explore</div>
+    <div class="section-title">The Map</div>
+    <p class="section-sub">Click any pin to see who I met there and what I learned.</p>
+  </div>
+  <div id="map"></div>
+  <div class="map-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#9C6BB5"></div>Person met</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4CAF50; border-radius:3px"></div>Company / place</div>
+  </div>
+</section>
+
+<!-- CONNECTIONS -->
+<section id="connections">
+  <div class="section-header">
+    <div class="section-tag">Network</div>
+    <div class="section-title">People I Met</div>
+    <p class="section-sub">Click a card to see the full profile — and find them on the map.</p>
+  </div>
+  <div class="search-row">
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="Search by name or company…" oninput="renderConnections()" />
+    </div>
+  </div>
+  <div class="filter-buttons" id="filter-buttons"></div>
+  <div class="connections-grid" id="connections-grid"></div>
+</section>
+
+<!-- COMPANIES -->
+<section id="companies">
+  <div class="section-header">
+    <div class="section-tag">Visited</div>
+    <div class="section-title">Companies &amp; Places</div>
+  </div>
+  <div class="companies-grid" id="companies-grid"></div>
+</section>
+
+<!-- LESSONS -->
+<section id="lessons">
+  <div class="section-header">
+    <div class="section-tag">Takeaways</div>
+    <div class="section-title">Things That Stuck</div>
+    <p class="section-sub">Quotes, frameworks, and moments I want to carry forward.</p>
+  </div>
+  <div class="lessons-grid" id="lessons-grid"></div>
+</section>
+
+<!-- PHOTOS -->
+<section id="photos">
+  <div class="section-header">
+    <div class="section-tag">Moments</div>
+    <div class="section-title">The Gallery</div>
+    <p class="section-sub">Swap in your own photos by replacing the src fields in the data below.</p>
+  </div>
+  <div class="photo-grid" id="photo-grid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Made with ♥ during one unforgettable month in Silicon Valley &nbsp;·&nbsp; <a href="/">juliazinkin.github.io</a></p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ─────────────────────────────────────────────────────────
+//  DATA  — replace placeholders with your real connections
+// ─────────────────────────────────────────────────────────
+
+const connections = [
+  {
+    id: 1,
+    name: "Alex Chen",
+    role: "Product Manager",
+    company: "Google",
+    linkedin: "https://linkedin.com/in/placeholder",
+    quote: "The best PMs are translators — they speak both engineer and business fluently.",
+    photo: null,   // replace with path or URL to a headshot
+    lat: 37.4220, lng: -122.0841,
+    color: "lavender"
+  },
+  {
+    id: 2,
+    name: "Morgan Lee",
+    role: "Senior Engineer",
+    company: "Meta",
+    linkedin: "https://linkedin.com/in/placeholder",
+    quote: "Ship fast and learn faster. Perfect is the enemy of launched.",
+    photo: null,
+    lat: 37.4842, lng: -122.1493,
+    color: "sage"
+  },
+  {
+    id: 3,
+    name: "Jordan Rivera",
+    role: "Venture Partner",
+    company: "Sequoia Capital",
+    linkedin: "https://linkedin.com/in/placeholder",
+    quote: "We don't invest in ideas. We invest in founders who won't stop.",
+    photo: null,
+    lat: 37.4220, lng: -122.1980,
+    color: "blush"
+  },
+  {
+    id: 4,
+    name: "Sam Patel",
+    role: "Co-founder & CEO",
+    company: "Stealth Startup",
+    linkedin: "https://linkedin.com/in/placeholder",
+    quote: "Your first 10 customers teach you more than any MBA class ever could.",
+    photo: null,
+    lat: 37.7985, lng: -122.4079,
+    color: "yellow"
+  },
+  {
+    id: 5,
+    name: "Dr. Casey Kim",
+    role: "Professor",
+    company: "Stanford",
+    linkedin: "https://linkedin.com/in/placeholder",
+    quote: "Sustainable enterprises solve real problems — not imaginary ones.",
+    photo: null,
+    lat: 37.4275, lng: -122.1697,
+    color: "peach"
+  },
+  {
+    id: 6,
+    name: "Taylor Brooks",
+    role: "Head of Design",
+    company: "Salesforce",
+    linkedin: "https://linkedin.com/in/placeholder",
+    quote: "Design isn't decoration — it's how you make a promise to your user.",
+    photo: null,
+    lat: 37.7946, lng: -122.3951,
+    color: "sky"
+  },
+];
+
+const companies = [
+  {
+    name: "Google",
+    type: "Big Tech",
+    icon: "🔍",
+    note: "Toured the Googleplex and learned about their PM culture — data informs every decision, but instinct still matters.",
+    bg: "#E8F5E9", color: "#2E7D32",
+    lat: 37.4220, lng: -122.0841
+  },
+  {
+    name: "Meta",
+    type: "Big Tech",
+    icon: "👥",
+    note: "Fascinating talk on scaling social products and the hard choices that come with billions of users.",
+    bg: "#E3F2FD", color: "#1565C0",
+    lat: 37.4842, lng: -122.1493
+  },
+  {
+    name: "Sequoia Capital",
+    type: "Venture Capital",
+    icon: "💰",
+    note: "Sand Hill Road is different than I imagined — quieter, more deliberate. Learned how VCs think about founder-market fit.",
+    bg: "#FFF3E0", color: "#E65100",
+    lat: 37.4220, lng: -122.1980
+  },
+  {
+    name: "Y Combinator",
+    type: "Accelerator",
+    icon: "🚀",
+    note: "Attended Demo Day. The energy in that room — hundreds of founders pitching their life's work — is electric.",
+    bg: "#FCE4EC", color: "#880E4F",
+    lat: 37.7985, lng: -122.4079
+  },
+  {
+    name: "Stanford University",
+    type: "University",
+    icon: "📚",
+    note: "Home base for the program. The d.school visit changed how I think about problem framing entirely.",
+    bg: "#F3E5F5", color: "#6A1B9A",
+    lat: 37.4275, lng: -122.1697
+  },
+  {
+    name: "Salesforce",
+    type: "Enterprise Tech",
+    icon: "☁️",
+    note: "Explored how a company scales from startup to enterprise while keeping a distinct culture intact.",
+    bg: "#E1F5FE", color: "#01579B",
+    lat: 37.7946, lng: -122.3951
+  },
+];
+
+const lessons = [
+  { text: "PMF isn't a destination — it's a signal you keep re-earning as you grow.", attr: "— YC partner talk", bg: "#FFF9C4" },
+  { text: "The best product decisions start with 'what problem are we really solving?'", attr: "— Stanford d.school workshop", bg: "#E8D5F5" },
+  { text: "Speed is a competitive advantage. Urgency is a culture, not a deadline.", attr: "— startup founder panel", bg: "#C8E6C9" },
+  { text: "Your network is the compound interest of your career.", attr: "— networking session", bg: "#FADADD" },
+  { text: "A great PM has strong opinions, held loosely.", attr: "— Google PM talk", bg: "#FFE0B2" },
+  { text: "Don't optimize for the outcome — optimize for the process that gets you there.", attr: "— VC office hours", bg: "#B3E5FC" },
+  { text: "Every 'no' in fundraising is data. Decode it.", attr: "— Sequoia partner", bg: "#FFF9C4" },
+  { text: "Users don't buy products. They buy better versions of themselves.", attr: "— design sprint", bg: "#E8D5F5" },
+];
+
+// Each photo: set src to a file path or URL (e.g. "../photos/day1.jpg"), or leave null for emoji placeholder
+const photos = [
+  { src: null, caption: "Day 1 — arriving at Stanford 🌴", emoji: "🌴", bg: "#E8D5F5" },
+  { src: null, caption: "The Googleplex campus tour", emoji: "🏢", bg: "#C8E6C9" },
+  { src: null, caption: "YC Demo Day energy", emoji: "🚀", bg: "#FADADD" },
+  { src: null, caption: "Sand Hill Road walk", emoji: "💰", bg: "#FFF9C4" },
+  { src: null, caption: "Late-night ideas at CoHo", emoji: "☕", bg: "#FFE0B2" },
+  { src: null, caption: "d.school design sprint", emoji: "🎨", bg: "#B3E5FC" },
+  { src: null, caption: "View from Twin Peaks, SF", emoji: "🌉", bg: "#E8D5F5" },
+  { src: null, caption: "Cohort dinner — unforgettable people", emoji: "🍽️", bg: "#C8E6C9" },
+  { src: null, caption: "Final presentation day", emoji: "🎤", bg: "#FADADD" },
+];
+
+// ─────────────────────────────────────────────────────────
+//  HELPERS
+// ─────────────────────────────────────────────────────────
+
+const COLOR_MAP = {
+  lavender: { bg: '#E8D5F5', text: '#7C4DA0' },
+  sage:     { bg: '#C8E6C9', text: '#2E7D32' },
+  blush:    { bg: '#FADADD', text: '#C2185B' },
+  yellow:   { bg: '#FFF9C4', text: '#F57F17' },
+  peach:    { bg: '#FFE0B2', text: '#E65100' },
+  sky:      { bg: '#B3E5FC', text: '#0277BD' },
+};
+
+function initials(name) {
+  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function palette(color) {
+  return COLOR_MAP[color] || COLOR_MAP.lavender;
+}
+
+function avatarHTML(person, size, cls) {
+  const p = palette(person.color);
+  if (person.photo) {
+    return `<div class="${cls}" style="width:${size}px;height:${size}px"><img src="${person.photo}" alt="${person.name}" /></div>`;
+  }
+  return `<div class="${cls}" style="width:${size}px;height:${size}px;background:${p.bg};color:${p.text}">${initials(person.name)}</div>`;
+}
+
+// ─────────────────────────────────────────────────────────
+//  MAP
+// ─────────────────────────────────────────────────────────
+
+let map;
+
+function initMap() {
+  map = L.map('map', { center: [37.465, -122.14], zoom: 11 });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
+    maxZoom: 18,
+  }).addTo(map);
+
+  connections.forEach(c => {
+    const p = palette(c.color);
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="width:36px;height:36px;border-radius:50%;background:${p.bg};border:3px solid ${p.text};
+             display:flex;align-items:center;justify-content:center;
+             font-family:'Caveat',cursive;font-weight:700;font-size:0.85rem;color:${p.text};
+             box-shadow:0 3px 10px rgba(0,0,0,0.2);cursor:pointer">${initials(c.name)}</div>`,
+      iconSize: [36, 36], iconAnchor: [18, 18],
+    });
+    L.marker([c.lat, c.lng], { icon }).addTo(map).bindPopup(`
+      <div class="popup-card">
+        <div class="popup-header">
+          ${avatarHTML(c, 46, 'popup-avatar')}
+          <div><div class="popup-name">${c.name}</div><div class="popup-role">${c.role}</div></div>
+        </div>
+        <span class="popup-badge" style="background:${p.bg};color:${p.text}">${c.company}</span>
+        <div class="popup-quote">"${c.quote}"</div>
+        <a class="popup-linkedin" href="${c.linkedin}" target="_blank">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+      </div>`, { maxWidth: 300 });
+  });
+
+  companies.forEach(co => {
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="width:32px;height:32px;border-radius:8px;background:${co.bg};border:2px solid ${co.color};
+             display:flex;align-items:center;justify-content:center;font-size:1rem;
+             box-shadow:0 3px 10px rgba(0,0,0,0.15);cursor:pointer">${co.icon}</div>`,
+      iconSize: [32, 32], iconAnchor: [16, 16],
+    });
+    L.marker([co.lat, co.lng], { icon }).addTo(map).bindPopup(`
+      <div class="popup-card">
+        <div style="font-size:2rem;margin-bottom:0.5rem">${co.icon}</div>
+        <div class="popup-name">${co.name}</div>
+        <div class="popup-role" style="color:${co.color};font-weight:600">${co.type}</div>
+        <div style="font-size:0.8rem;margin-top:0.5rem;color:#555;line-height:1.55">${co.note}</div>
+      </div>`, { maxWidth: 280 });
+  });
+}
+
+function flyToPin(lat, lng) {
+  document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => map.flyTo([lat, lng], 14, { duration: 1.5 }), 650);
+}
+
+// ─────────────────────────────────────────────────────────
+//  CONNECTIONS
+// ─────────────────────────────────────────────────────────
+
+let activeFilter = 'all';
+
+function buildFilterButtons() {
+  const container = document.getElementById('filter-buttons');
+  const all = document.createElement('button');
+  all.className = 'filter-btn active'; all.textContent = 'All';
+  all.onclick = () => setFilter('all', all);
+  container.appendChild(all);
+
+  [...new Set(connections.map(c => c.company))].forEach(co => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn'; btn.textContent = co;
+    btn.onclick = () => setFilter(co, btn);
+    container.appendChild(btn);
+  });
+}
+
+function setFilter(company, btn) {
+  activeFilter = company;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderConnections();
+}
+
+function renderConnections() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = connections.filter(c => {
+    const matchFilter = activeFilter === 'all' || c.company === activeFilter;
+    const matchSearch = !q || c.name.toLowerCase().includes(q) || c.company.toLowerCase().includes(q) || c.role.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+
+  document.getElementById('connections-grid').innerHTML = filtered.map(c => {
+    const p = palette(c.color);
+    return `
+      <div class="connection-card cc-${c.color}" onclick="openModal(${c.id})">
+        ${avatarHTML(c, 58, 'card-avatar')}
+        <div class="card-name">${c.name}</div>
+        <div class="card-role">${c.role}</div>
+        <span class="card-company-badge" style="background:${p.bg};color:${p.text}">${c.company}</span>
+        <div class="card-quote">"${c.quote}"</div>
+        <a class="card-linkedin" href="${c.linkedin}" target="_blank" onclick="event.stopPropagation()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#0077B5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+      </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+//  MODAL
+// ─────────────────────────────────────────────────────────
+
+function openModal(id) {
+  const c = connections.find(x => x.id === id);
+  if (!c) return;
+  const p = palette(c.color);
+  document.getElementById('modal-inner').innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    ${avatarHTML(c, 78, 'modal-avatar')}
+    <div class="modal-name">${c.name}</div>
+    <div class="modal-role">${c.role}</div>
+    <span class="modal-badge" style="background:${p.bg};color:${p.text}">${c.company}</span>
+    <div class="modal-quote">"${c.quote}"</div>
+    <div class="modal-actions">
+      <a class="btn-linkedin" href="${c.linkedin}" target="_blank">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        View on LinkedIn
+      </a>
+      <button class="btn-map" onclick="flyToPin(${c.lat},${c.lng}); closeModal()">📍 Find on map</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ─────────────────────────────────────────────────────────
+//  COMPANIES
+// ─────────────────────────────────────────────────────────
+
+function renderCompanies() {
+  document.getElementById('companies-grid').innerHTML = companies.map(co => `
+    <div class="company-card" style="background:${co.bg};color:${co.color}">
+      <div class="company-icon">${co.icon}</div>
+      <div class="company-name">${co.name}</div>
+      <div class="company-type">${co.type}</div>
+      <div class="company-note">${co.note}</div>
+    </div>`).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+//  LESSONS
+// ─────────────────────────────────────────────────────────
+
+function renderLessons() {
+  document.getElementById('lessons-grid').innerHTML = lessons.map(l => `
+    <div class="sticky-note" style="background:${l.bg}">
+      "${l.text}"
+      <span class="sticky-attr">${l.attr}</span>
+    </div>`).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+//  PHOTOS
+// ─────────────────────────────────────────────────────────
+
+function renderPhotos() {
+  document.getElementById('photo-grid').innerHTML = photos.map(p => `
+    <div class="photo-item">
+      <div class="polaroid">
+        ${p.src
+          ? `<img src="${p.src}" alt="${p.caption}" />`
+          : `<div class="photo-placeholder" style="background:linear-gradient(135deg,${p.bg},#fff)">${p.emoji}</div>`
+        }
+        <div class="photo-caption">${p.caption}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+//  ANIMATED COUNTERS
+// ─────────────────────────────────────────────────────────
+
+function animateCount(el, target, ms = 1100) {
+  let v = 0;
+  const step = target / (ms / 16);
+  const t = setInterval(() => {
+    v = Math.min(v + step, target);
+    el.textContent = Math.floor(v);
+    if (v >= target) clearInterval(t);
+  }, 16);
+}
+
+// ─────────────────────────────────────────────────────────
+//  BOOT
+// ─────────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildFilterButtons();
+  renderConnections();
+  renderCompanies();
+  renderLessons();
+  renderPhotos();
+  initMap();
+
+  setTimeout(() => {
+    animateCount(document.getElementById('stat-connections'), connections.length);
+    animateCount(document.getElementById('stat-companies'), companies.length);
+  }, 400);
+});
+</script>
+</body>
+</html>
