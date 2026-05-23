@@ -229,6 +229,8 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
     .company-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+    .company-logo-wrap { width: 48px; height: 48px; margin-bottom: 0.9rem; }
+    .company-logo-wrap img { width: 48px; height: 48px; object-fit: contain; border-radius: 8px; }
     .company-icon { font-size: 2.4rem; margin-bottom: 0.9rem; }
     .company-name { font-weight: 700; font-size: 1.08rem; margin-bottom: 0.2rem; }
     .company-type { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600; margin-bottom: 0.65rem; opacity: 0.7; }
@@ -610,6 +612,7 @@ const companies = [
     name: "YouTube / Google",
     type: "Big Tech",
     icon: "▶️",
+    logo: "https://logo.clearbit.com/youtube.com",
     note: "Visited YouTube HQ in San Bruno — met 5 engineers and PMs and got an inside look at product culture at Google.",
     bg: "#FCE4EC", color: "#C62828",
     lat: 37.6304, lng: -122.4110
@@ -618,6 +621,7 @@ const companies = [
     name: "LinkedIn",
     type: "Professional Network",
     icon: "💼",
+    logo: "https://logo.clearbit.com/linkedin.com",
     note: "Met the LinkedIn team in Sunnyvale — PMs, engineers, and finance all in one visit. Great conversations about building at scale.",
     bg: "#E3F2FD", color: "#1565C0",
     lat: 37.3626, lng: -122.0286
@@ -626,6 +630,7 @@ const companies = [
     name: "Abridge",
     type: "AI Healthcare Startup",
     icon: "🩺",
+    logo: "https://logo.clearbit.com/abridge.com",
     note: "Met Nadine and Julia at Abridge — an AI startup transforming clinical documentation. Two of the most impressive people on the trip.",
     bg: "#E8F5E9", color: "#2E7D32",
     lat: 37.7849, lng: -122.4094
@@ -634,6 +639,7 @@ const companies = [
     name: "Joby Aviation",
     type: "Electric Aviation",
     icon: "✈️",
+    logo: "https://logo.clearbit.com/jobyaviation.com",
     note: "Met Matt who is building the future of urban air mobility — electric air taxis are closer than you think.",
     bg: "#FFF3E0", color: "#E65100",
     lat: 37.5072, lng: -122.2605
@@ -642,6 +648,7 @@ const companies = [
     name: "Scale AI",
     type: "AI Infrastructure",
     icon: "🤖",
+    logo: "https://logo.clearbit.com/scale.com",
     note: "Met Tommy at Scale AI — building the data infrastructure powering the world's biggest AI models.",
     bg: "#F3E5F5", color: "#6A1B9A",
     lat: 37.7879, lng: -122.3987
@@ -650,6 +657,7 @@ const companies = [
     name: "Skydio",
     type: "Drone Technology",
     icon: "🚁",
+    logo: "https://logo.clearbit.com/skydio.com",
     note: "Got coffee with Catherine Wood — PM at Skydio, building autonomous American drones for defense and enterprise.",
     bg: "#E1F5FE", color: "#01579B",
     lat: 37.4852, lng: -122.2364
@@ -658,6 +666,7 @@ const companies = [
     name: "Microsoft",
     type: "Big Tech",
     icon: "🪟",
+    logo: "https://logo.clearbit.com/microsoft.com",
     note: "Connected with Summer Smith, PM at Microsoft — exploring the intersection of AI and product management.",
     bg: "#E8F5E9", color: "#1B5E20",
     lat: 37.4030, lng: -122.1100
@@ -666,6 +675,7 @@ const companies = [
     name: "Filevine",
     type: "Legal Tech",
     icon: "⚖️",
+    logo: "https://logo.clearbit.com/filevine.com",
     note: "Mariam Sulakian was a DTech speaker — Founder and CTO with a background at Meta and GitHub. One of the most inspiring talks.",
     bg: "#FFF9C4", color: "#F57F17",
     lat: 37.4420, lng: -122.1430
@@ -674,6 +684,7 @@ const companies = [
     name: "WNBA",
     type: "Professional Sports",
     icon: "🏀",
+    logo: "https://logo.clearbit.com/wnba.com",
     note: "Got coffee with Gabrielle Wiggins, PM at the WNBA — an unconventional path into product that was genuinely eye-opening.",
     bg: "#FCE4EC", color: "#880E4F",
     lat: 37.7800, lng: -122.4150
@@ -682,6 +693,7 @@ const companies = [
     name: "Stealth Startup",
     type: "Early Stage",
     icon: "🤫",
+    logo: null,
     note: "Shruti Haldea — guest speaker with PM experience at Apple and Sonos, now building something new. Watch this space.",
     bg: "#EDE7F6", color: "#4527A0",
     lat: 37.4300, lng: -122.1750
@@ -759,9 +771,14 @@ function initMap() {
   companies.forEach(co => {
     const icon = L.divIcon({
       className: '',
-      html: `<div style="width:32px;height:32px;border-radius:8px;background:${co.bg};border:2px solid ${co.color};
-             display:flex;align-items:center;justify-content:center;font-size:1rem;
-             box-shadow:0 3px 10px rgba(0,0,0,0.15);cursor:pointer">${co.icon}</div>`,
+      html: `<div style="width:36px;height:36px;border-radius:8px;background:${co.bg};border:2px solid ${co.color};
+             overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.15);cursor:pointer;
+             display:flex;align-items:center;justify-content:center;">
+               ${co.logo
+                 ? `<img src="${co.logo}" style="width:26px;height:26px;object-fit:contain" onerror="this.outerHTML='<span style=\\"font-size:1rem\\">${co.icon}</span>'" />`
+                 : `<span style="font-size:1rem">${co.icon}</span>`
+               }
+             </div>`,
       iconSize: [32, 32], iconAnchor: [16, 16],
     });
     L.marker([co.lat, co.lng], { icon }).addTo(map).bindPopup(`
@@ -874,7 +891,10 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 function renderCompanies() {
   document.getElementById('companies-grid').innerHTML = companies.map(co => `
     <div class="company-card" style="background:${co.bg};color:${co.color}">
-      <div class="company-icon">${co.icon}</div>
+      ${co.logo
+        ? `<div class="company-logo-wrap"><img src="${co.logo}" alt="${co.name}" onerror="this.parentNode.innerHTML='<span style=\\"font-size:2.4rem\\">${co.icon}</span>'" /></div>`
+        : `<div class="company-icon">${co.icon}</div>`
+      }
       <div class="company-name">${co.name}</div>
       <div class="company-type">${co.type}</div>
       <div class="company-note">${co.note}</div>
