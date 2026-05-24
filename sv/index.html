@@ -337,8 +337,7 @@
   </div>
   <div id="map"></div>
   <div class="map-legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#9C6BB5"></div>Person met</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#4CAF50; border-radius:3px"></div>Company / place</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9C6BB5;border-radius:4px"></div>Click a company to see who I met there</div>
   </div>
 </section>
 
@@ -732,51 +731,57 @@ function initMap() {
     maxZoom: 18,
   }).addTo(map);
 
-  connections.forEach(c => {
-    const p = palette(c.color);
-    const icon = L.divIcon({
-      className: '',
-      html: `<div style="width:36px;height:36px;border-radius:50%;background:${p.bg};border:3px solid ${p.text};
-             display:flex;align-items:center;justify-content:center;
-             font-family:'Caveat',cursive;font-weight:700;font-size:0.85rem;color:${p.text};
-             box-shadow:0 3px 10px rgba(0,0,0,0.2);cursor:pointer">${initials(c.name)}</div>`,
-      iconSize: [36, 36], iconAnchor: [18, 18],
-    });
-    L.marker([c.lat, c.lng], { icon }).addTo(map).bindPopup(`
-      <div class="popup-card">
-        <div class="popup-header">
-          ${avatarHTML(c, 46, 'popup-avatar')}
-          <div><div class="popup-name">${c.name}</div><div class="popup-role">${c.role}</div></div>
-        </div>
-        <span class="popup-badge" style="background:${p.bg};color:${p.text}">${c.company}</span>
-        <div class="popup-quote">"${c.quote}"</div>
-        ${c.linkedin ? `<a class="popup-linkedin" href="${c.linkedin}" target="_blank">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          LinkedIn
-        </a>` : ''}
-      </div>`, { maxWidth: 300 });
-  });
-
   companies.forEach(co => {
+    const people = connections.filter(c => c.company === co.name);
+
+    const peopleHtml = people.length > 0
+      ? `<div style="margin-top:0.8rem;border-top:1px solid #eee;padding-top:0.8rem">
+           <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#bbb;margin-bottom:0.55rem">People I connected with</div>
+           ${people.map(p => {
+             const pal = palette(p.color);
+             return `<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.45rem">
+               <div style="width:28px;height:28px;border-radius:50%;background:${pal.bg};color:${pal.text};flex-shrink:0;
+                    display:flex;align-items:center;justify-content:center;font-family:'Caveat',cursive;font-size:0.75rem;font-weight:700">
+                 ${initials(p.name)}
+               </div>
+               <div>
+                 <div style="font-weight:600;font-size:0.83rem;line-height:1.2;color:#2D2D2D">${p.name}</div>
+                 <div style="font-size:0.73rem;color:#999">${p.role}</div>
+               </div>
+             </div>`;
+           }).join('')}
+         </div>`
+      : '';
+
+    const logoImg = co.logo
+      ? `<img src="${co.logo}" style="width:32px;height:32px;object-fit:contain;border-radius:6px" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" /><span style="display:none;font-size:1.5rem">${co.icon}</span>`
+      : `<span style="font-size:1.5rem">${co.icon}</span>`;
+
     const icon = L.divIcon({
       className: '',
-      html: `<div style="width:36px;height:36px;border-radius:8px;background:${co.bg};border:2px solid ${co.color};
-             overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.15);cursor:pointer;
+      html: `<div style="width:40px;height:40px;border-radius:10px;background:${co.bg};border:2px solid ${co.color};
+             overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.18);cursor:pointer;
              display:flex;align-items:center;justify-content:center;">
                ${co.logo
-                 ? `<img src="${co.logo}" style="width:26px;height:26px;object-fit:contain" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" /><span style="display:none;font-size:1rem">${co.icon}</span>`
-                 : `<span style="font-size:1rem">${co.icon}</span>`
+                 ? `<img src="${co.logo}" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" /><span style="display:none;font-size:1.1rem">${co.icon}</span>`
+                 : `<span style="font-size:1.1rem">${co.icon}</span>`
                }
              </div>`,
-      iconSize: [32, 32], iconAnchor: [16, 16],
+      iconSize: [40, 40], iconAnchor: [20, 20],
     });
+
     L.marker([co.lat, co.lng], { icon }).addTo(map).bindPopup(`
       <div class="popup-card">
-        <div style="font-size:2rem;margin-bottom:0.5rem">${co.icon}</div>
-        <div class="popup-name">${co.name}</div>
-        <div class="popup-role" style="color:${co.color};font-weight:600">${co.type}</div>
-        <div style="font-size:0.8rem;margin-top:0.5rem;color:#555;line-height:1.55">${co.note}</div>
-      </div>`, { maxWidth: 280 });
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem">
+          ${logoImg}
+          <div>
+            <div class="popup-name">${co.name}</div>
+            <div style="font-size:0.75rem;color:${co.color};font-weight:600">${co.type}</div>
+          </div>
+        </div>
+        <div style="font-size:0.8rem;color:#555;line-height:1.55">${co.note}</div>
+        ${peopleHtml}
+      </div>`, { maxWidth: 310 });
   });
 }
 
