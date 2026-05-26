@@ -586,6 +586,61 @@ const connections = [
     lat: 37.4420, lng: -122.1430,
     color: "blush"
   },
+  {
+    id: 21,
+    name: "Nancy Ford",
+    role: "Partner, Co-Head of KKR Ascendant",
+    company: "KKR",
+    linkedin: "https://www.linkedin.com/in/nancy-ford-09b494/",
+    quote: "Partner and Co-Head of KKR Ascendant — leading KKR's next-generation leadership initiative.",
+    photo: null,
+    lat: 37.7925, lng: -122.4036,
+    color: "lavender"
+  },
+  {
+    id: 22,
+    name: "Eddy Cue",
+    role: "SVP of Internet Software & Services",
+    company: "Apple",
+    linkedin: "https://www.linkedin.com/in/eddy-cue-7483301/",
+    quote: "SVP of Internet Software & Services at Apple — one of the most senior tech executives I've ever heard speak.",
+    photo: null,
+    lat: 37.3349, lng: -122.0090,
+    color: "sky"
+  },
+  {
+    id: 23,
+    name: "Bill Schlough",
+    role: "CIO",
+    company: "San Francisco Giants",
+    linkedin: "https://www.linkedin.com/in/bschlough/",
+    quote: "CIO of the San Francisco Giants — fascinating talk on tech in professional sports.",
+    photo: null,
+    lat: 37.7786, lng: -122.3893,
+    color: "peach"
+  },
+  {
+    id: 24,
+    name: "Whitney Hazard",
+    role: "Chief of Staff",
+    company: "Maven AGI",
+    linkedin: "https://www.linkedin.com/in/whitneyhazard/",
+    quote: "Chief of Staff at Maven AGI — DSV guest speaker on building AI products.",
+    photo: null,
+    lat: 37.7820, lng: -122.4060,
+    color: "sage"
+  },
+  {
+    id: 25,
+    name: "Lindsay Hirschhorn",
+    role: "Finance Analytics",
+    company: "Anthropic",
+    linkedin: "https://www.linkedin.com/in/lindsayhirschhorn/",
+    quote: "Finance Analytics at Anthropic, previously at Google.",
+    photo: null,
+    lat: 37.7848, lng: -122.3975,
+    color: "yellow"
+  },
 ];
 
 const companies = [
@@ -670,6 +725,51 @@ const companies = [
     bg: "#FCE4EC", color: "#880E4F",
     lat: 37.7800, lng: -122.4150
   },
+  {
+    name: "KKR",
+    type: "Private Equity",
+    icon: "🏦",
+    logo: "https://www.google.com/s2/favicons?domain=kkr.com&sz=128",
+    note: "Met Nancy Ford, Partner and Co-Head of KKR Ascendant — a fascinating look at private equity and leadership development.",
+    bg: "#E8D5F5", color: "#4A2060",
+    lat: 37.7925, lng: -122.4036
+  },
+  {
+    name: "Apple",
+    type: "Big Tech",
+    icon: "🍎",
+    logo: "https://www.google.com/s2/favicons?domain=apple.com&sz=128",
+    note: "Heard from Eddy Cue, SVP at Apple — one of the most senior tech executives I've encountered, with incredible insights on product and services.",
+    bg: "#B3E5FC", color: "#01579B",
+    lat: 37.3349, lng: -122.0090
+  },
+  {
+    name: "San Francisco Giants",
+    type: "Professional Sports",
+    icon: "⚾",
+    logo: "https://www.google.com/s2/favicons?domain=sfgiants.com&sz=128",
+    note: "Met Bill Schlough, CIO of the SF Giants — a unique window into how technology powers a legendary sports franchise.",
+    bg: "#FFE0B2", color: "#E65100",
+    lat: 37.7786, lng: -122.3893
+  },
+  {
+    name: "Maven AGI",
+    type: "AI Startup",
+    icon: "🤖",
+    logo: "https://www.google.com/s2/favicons?domain=mavenagi.com&sz=128",
+    note: "Whitney Hazard spoke as a DSV guest — Chief of Staff at Maven AGI, building AI agents for enterprise customer support.",
+    bg: "#C8E6C9", color: "#2E7D32",
+    lat: 37.7820, lng: -122.4060
+  },
+  {
+    name: "Anthropic",
+    type: "AI Safety",
+    icon: "🧠",
+    logo: "https://www.google.com/s2/favicons?domain=anthropic.com&sz=128",
+    note: "Connected with Lindsay Hirschhorn in Finance Analytics at Anthropic — one of the world's leading AI safety companies.",
+    bg: "#FFF9C4", color: "#F57F17",
+    lat: 37.7848, lng: -122.3975
+  },
 ];
 
 // ─────────────────────────────────────────────────────────
@@ -686,16 +786,21 @@ const COLOR_MAP = {
 };
 
 const COMPANY_COLOR = {
-  'YouTube / Google': 'blush',
-  'LinkedIn':         'sky',
-  'Joby Aviation':    'peach',
-  'Scale AI':         'lavender',
-  'Abridge':          'sage',
-  'Skydio':           'yellow',
-  'Microsoft':        'sky',
-  'Filevine':         'lavender',
-  'WNBA':             'sage',
-  'Stealth Startup':  'peach',
+  'YouTube / Google':    'blush',
+  'LinkedIn':            'sky',
+  'Joby Aviation':       'peach',
+  'Scale AI':            'lavender',
+  'Abridge':             'sage',
+  'Skydio':              'yellow',
+  'Microsoft':           'sky',
+  'Filevine':            'lavender',
+  'WNBA':                'sage',
+  'Stealth Startup':     'peach',
+  'KKR':                 'lavender',
+  'Apple':               'sky',
+  'San Francisco Giants':'peach',
+  'Maven AGI':           'sage',
+  'Anthropic':           'yellow',
 };
 
 function initials(name) {
