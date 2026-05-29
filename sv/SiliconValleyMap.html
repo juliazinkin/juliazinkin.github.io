@@ -652,6 +652,83 @@ const connections = [
     lat: 37.7925, lng: -122.4036,
     color: "lavender"
   },
+  {
+    id: 27,
+    name: "Rachel Tucker",
+    role: "Director, Product Management",
+    company: "Meta",
+    linkedin: "https://www.linkedin.com/in/rachel-t-78723625/",
+    quote: "Director of Product Management at Meta, previously at Vevo.",
+    photo: null,
+    lat: 37.4845, lng: -122.1477,
+    color: "blush"
+  },
+  {
+    id: 28,
+    name: "Sean D'Souza",
+    role: "Chief of Staff to General Counsel",
+    company: "Google",
+    linkedin: "https://www.linkedin.com/in/seandsouza/",
+    quote: "Chief of Staff to General Counsel at Google.",
+    photo: null,
+    lat: 37.4220, lng: -122.0840,
+    color: "yellow"
+  },
+  {
+    id: 29,
+    name: "Nicole Payne",
+    role: "VP Strategy",
+    company: "EA Games",
+    linkedin: "https://www.linkedin.com/in/nicolepayne2/",
+    quote: "VP of Strategy at EA Games.",
+    photo: null,
+    lat: 37.5077, lng: -122.2477,
+    color: "peach"
+  },
+  {
+    id: 30,
+    name: "Vineeta Gajwani",
+    role: "VP Legal Affairs",
+    company: "EA Games",
+    linkedin: "https://www.linkedin.com/in/vineeta/",
+    quote: "VP of Legal Affairs at EA Games.",
+    photo: null,
+    lat: 37.5080, lng: -122.2480,
+    color: "peach"
+  },
+  {
+    id: 31,
+    name: "Amy Lazarus",
+    role: "Games for All",
+    company: "EA Games",
+    linkedin: "https://www.linkedin.com/in/amylazarus/",
+    quote: "Leading Games for All at EA — focused on inclusion and accessibility in gaming.",
+    photo: null,
+    lat: 37.5083, lng: -122.2483,
+    color: "peach"
+  },
+  {
+    id: 32,
+    name: "Andrew Ofstad",
+    role: "Co-founder",
+    company: "Airtable",
+    linkedin: "https://www.linkedin.com/in/aofstad/",
+    quote: "Co-founder of Airtable — DSV guest speaker on building a product used by millions.",
+    photo: null,
+    lat: 37.7855, lng: -122.3975,
+    color: "lavender"
+  },
+  {
+    id: 33,
+    name: "Claire McDonough",
+    role: "CFO",
+    company: "Rivian",
+    linkedin: "https://www.linkedin.com/in/claire-rauh-mcdonough-5291b946/",
+    quote: "CFO of Rivian — incredible insight into finance at a next-gen EV company.",
+    photo: null,
+    lat: 37.4419, lng: -122.1430,
+    color: "sage"
+  },
 ];
 
 const companies = [
@@ -781,6 +858,51 @@ const companies = [
     bg: "#FFF9C4", color: "#F57F17",
     lat: 37.7848, lng: -122.3975
   },
+  {
+    name: "Meta",
+    type: "Big Tech",
+    icon: "👓",
+    logo: "https://www.google.com/s2/favicons?domain=meta.com&sz=128",
+    note: "Met Rachel Tucker, Director of PM at Meta — great perspective on product at one of the world's largest platforms.",
+    bg: "#FADADD", color: "#C2185B",
+    lat: 37.4845, lng: -122.1477
+  },
+  {
+    name: "Google",
+    type: "Big Tech",
+    icon: "🔍",
+    logo: "https://www.google.com/s2/favicons?domain=google.com&sz=128",
+    note: "Met Sean D'Souza, Chief of Staff to General Counsel at Google — fascinating look at the intersection of law and tech.",
+    bg: "#FFF9C4", color: "#F57F17",
+    lat: 37.4220, lng: -122.0840
+  },
+  {
+    name: "EA Games",
+    type: "Gaming",
+    icon: "🎮",
+    logo: "https://www.google.com/s2/favicons?domain=ea.com&sz=128",
+    note: "Met three leaders at EA — VP Strategy, VP Legal, and the head of Games for All. A deep dive into gaming as an industry.",
+    bg: "#FFE0B2", color: "#E65100",
+    lat: 37.5077, lng: -122.2477
+  },
+  {
+    name: "Airtable",
+    type: "Productivity Tech",
+    icon: "🗂️",
+    logo: "https://www.google.com/s2/favicons?domain=airtable.com&sz=128",
+    note: "Andrew Ofstad, co-founder of Airtable, spoke as a DSV guest — an inspiring story of building a no-code tool used by millions.",
+    bg: "#E8D5F5", color: "#7C4DA0",
+    lat: 37.7855, lng: -122.3975
+  },
+  {
+    name: "Rivian",
+    type: "Electric Vehicles",
+    icon: "🚗",
+    logo: "https://www.google.com/s2/favicons?domain=rivian.com&sz=128",
+    note: "Met Claire McDonough, CFO of Rivian — a compelling conversation about finance and leadership at a pioneering EV company.",
+    bg: "#C8E6C9", color: "#2E7D32",
+    lat: 37.4419, lng: -122.1430
+  },
 ];
 
 // ─────────────────────────────────────────────────────────
@@ -812,6 +934,11 @@ const COMPANY_COLOR = {
   'San Francisco Giants':'peach',
   'Maven AGI':           'sage',
   'Anthropic':           'yellow',
+  'Meta':                'blush',
+  'Google':              'yellow',
+  'EA Games':            'peach',
+  'Airtable':            'lavender',
+  'Rivian':              'sage',
 };
 
 function initials(name) {
