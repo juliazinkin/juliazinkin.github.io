@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Networking Tracker</title>
+  <style>
+    :root {
+      --primary: #1e3a5f;
+      --accent: #2563eb;
+      --green: #16a34a;
+      --green-bg: #dcfce7;
+      --red: #dc2626;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --muted-bg: #e2e8f0;
+      --muted-icon: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+    }
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 0.9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.01em; }
+    header .subtitle { font-size: 0.78rem; opacity: 0.6; margin-top: 0.1rem; }
+    .container { max-width: 1500px; margin: 0 auto; padding: 1.25rem 1.75rem; }
+
+    /* Add section */
+    .add-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 1.1rem;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .add-toggle {
+      background: var(--accent);
+      color: white;
+      padding: 0.7rem 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .add-toggle:hover { background: #1d4ed8; }
+    .add-toggle span { font-weight: 600; font-size: 0.88rem; }
+    .add-toggle .chev { transition: transform 0.2s; display: inline-block; }
+    .add-toggle.open .chev { transform: rotate(180deg); }
+    .add-body { display: none; padding: 1.1rem 1.2rem 1.2rem; }
+    .add-body.open { display: block; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+      gap: 0.8rem;
+    }
+    .fg { display: flex; flex-direction: column; gap: 0.25rem; }
+    .fg label {
+      font-size: 0.68rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .fg input, .fg textarea {
+      padding: 0.42rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      background: white;
+    }
+    .fg input:focus, .fg textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+    .fg textarea { resize: vertical; min-height: 58px; }
+    .fg.span2 { grid-column: span 2; }
+    .chk-row {
+      display: flex; align-items: center; gap: 0.45rem; margin-top: 1.35rem;
+    }
+    .chk-row input { width: 15px; height: 15px; accent-color: var(--green); cursor: pointer; }
+    .chk-row label { font-size: 0.8rem; color: var(--text); cursor: pointer; font-weight: 500; }
+    .form-actions { display: flex; gap: 0.55rem; margin-top: 0.9rem; }
+
+    /* Buttons */
+    .btn {
+      padding: 0.45rem 1rem;
+      border-radius: 6px; border: none;
+      font-size: 0.83rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary { background: white; color: var(--muted); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--bg); }
+    .btn-danger { background: white; color: var(--red); border: 1px solid #fca5a5; }
+    .btn-danger:hover { background: #fef2f2; }
+
+    /* Controls */
+    .controls {
+      display: flex; gap: 0.65rem; margin-bottom: 0.75rem;
+      flex-wrap: wrap; align-items: flex-start;
+    }
+    .search-box { position: relative; flex: 1; min-width: 210px; }
+    .search-box svg {
+      position: absolute; left: 0.6rem; top: 50%;
+      transform: translateY(-50%); color: var(--muted); pointer-events: none;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 0.52rem 0.7rem 0.52rem 2rem;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 0.85rem; font-family: inherit;
+      outline: none; background: white;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .search-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+    .filter-panel { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+    .filter-label { font-size: 0.73rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
+    .chip {
+      padding: 0.25rem 0.65rem; border-radius: 999px;
+      border: 1px solid var(--border); background: white;
+      font-size: 0.73rem; font-weight: 600; cursor: pointer;
+      transition: all 0.15s; color: var(--muted);
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: white; }
+    .sort-wrap { display: flex; align-items: center; gap: 0.35rem; }
+    .sort-wrap label { font-size: 0.73rem; color: var(--muted); font-weight: 600; }
+    .sort-wrap select {
+      padding: 0.4rem 0.6rem;
+      border: 1px solid var(--border); border-radius: 6px;
+      font-size: 0.78rem; font-family: inherit;
+      outline: none; background: white; color: var(--text); cursor: pointer;
+    }
+
+    /* Results bar */
+    .results-bar { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.55rem; }
+
+    /* Table */
+    .table-wrap {
+      background: white; border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; overflow-x: auto;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 860px; }
+    thead { background: #f8fafc; }
+    th {
+      padding: 0.65rem 0.85rem;
+      text-align: left; font-size: 0.68rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+      white-space: nowrap; border-bottom: 1px solid var(--border);
+    }
+    td { padding: 0.75rem 0.85rem; border-top: 1px solid var(--border); vertical-align: top; }
+    tbody tr:hover td { background: #f8fafc; }
+
+    .name-cell .name { font-weight: 600; }
+    .name-cell .info { font-size: 0.73rem; color: var(--muted); margin-top: 0.12rem; }
+    .company-cell .cur { font-weight: 500; }
+    .company-cell .past { font-size: 0.72rem; color: #94a3b8; margin-top: 0.12rem; }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 0.22rem; }
+    .ctag {
+      display: inline-block; padding: 0.15rem 0.5rem;
+      border-radius: 999px; font-size: 0.7rem; font-weight: 600;
+      background: #dbeafe; color: #1d4ed8;
+    }
+
+    .ty-btn {
+      background: none; border: none; cursor: pointer; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 50%;
+      transition: transform 0.1s;
+    }
+    .ty-btn:hover { transform: scale(1.18); }
+    .ty-yes { background: var(--green-bg); color: var(--green); font-size: 0.95rem; }
+    .ty-no  { background: var(--muted-bg); color: var(--muted-icon); font-size: 0.85rem; }
+
+    .li-link {
+      color: #0077b5; text-decoration: none; font-size: 0.78rem;
+      display: inline-flex; align-items: center; gap: 0.2rem;
+    }
+    .li-link:hover { text-decoration: underline; }
+    .dash { color: #cbd5e1; }
+
+    .notes-text {
+      font-size: 0.76rem; color: var(--muted);
+      max-width: 170px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap; display: block;
+    }
+
+    .action-cell { display: flex; gap: 0.3rem; }
+    .icon-btn {
+      padding: 0.27rem 0.52rem;
+      border: 1px solid var(--border); border-radius: 5px;
+      background: white; cursor: pointer;
+      font-size: 0.76rem; color: var(--muted);
+      transition: all 0.15s; font-family: inherit;
+    }
+    .icon-btn:hover { background: var(--bg); color: var(--text); }
+    .icon-btn.del:hover { background: #fef2f2; color: var(--red); border-color: #fca5a5; }
+
+    .empty { text-align: center; padding: 2.5rem; color: var(--muted); }
+
+    /* Modal */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 50; padding: 1rem;
+      backdrop-filter: blur(2px);
+    }
+    .overlay.hidden { display: none; }
+    .modal {
+      background: white; border-radius: 12px;
+      width: 100%; max-width: 680px; max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+    }
+    .modal-hdr {
+      padding: 1rem 1.3rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: white; z-index: 1;
+    }
+    .modal-hdr h2 { font-size: 0.98rem; font-weight: 700; }
+    .modal-x {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 1.05rem;
+      padding: 0.22rem 0.4rem; border-radius: 4px; line-height: 1;
+    }
+    .modal-x:hover { background: var(--bg); color: var(--text); }
+    .modal-body {
+      padding: 1.1rem 1.3rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;
+    }
+    .modal-body .full { grid-column: 1/-1; }
+    .modal-ftr {
+      padding: 0.9rem 1.3rem; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; bottom: 0; background: white;
+    }
+    .modal-ftr-r { display: flex; gap: 0.55rem; }
+
+    @media (max-width: 580px) {
+      .container { padding: 0.9rem 1rem; }
+      .modal-body { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Networking Tracker</h1>
+    <div class="subtitle" id="hdr-count">Loading…</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Quick Add -->
+  <div class="add-section">
+    <div class="add-toggle" id="add-toggle" onclick="toggleAdd()">
+      <span>+ Add New Contact</span>
+      <span class="chev">&#9660;</span>
+    </div>
+    <div class="add-body" id="add-body">
+      <div class="form-grid">
+        <div class="fg">
+          <label>Name *</label>
+          <input id="a-name" type="text" placeholder="Full name">
+        </div>
+        <div class="fg">
+          <label>Current Company</label>
+          <input id="a-company" type="text" placeholder="Where they work now">
+        </div>
+        <div class="fg">
+          <label>Past Companies</label>
+          <input id="a-past" type="text" placeholder="e.g. Apple, Google">
+        </div>
+        <div class="fg">
+          <label>Role / Title</label>
+          <input id="a-role" type="text" placeholder="e.g. SWE, PM">
+        </div>
+        <div class="fg">
+          <label>Email</label>
+          <input id="a-email" type="email" placeholder="email@example.com">
+        </div>
+        <div class="fg">
+          <label>Phone</label>
+          <input id="a-phone" type="tel" placeholder="(555) 123-4567">
+        </div>
+        <div class="fg">
+          <label>LinkedIn URL</label>
+          <input id="a-linkedin" type="url" placeholder="https://linkedin.com/in/…">
+        </div>
+        <div class="fg">
+          <label>Connection Type</label>
+          <input id="a-type" type="text" placeholder="e.g. DTech, DSV, DTech speaker">
+        </div>
+        <div class="fg">
+          <label>Date Met</label>
+          <input id="a-date" type="text" placeholder="e.g. 5/19, Jan 2025">
+        </div>
+        <div class="fg">
+          <label>Notes</label>
+          <textarea id="a-notes" placeholder="Any notes…"></textarea>
+        </div>
+        <div class="fg">
+          <div class="chk-row">
+            <input id="a-ty" type="checkbox">
+            <label for="a-ty">LinkedIn Thank You sent</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="addContact()">Add Contact</button>
+        <button class="btn btn-secondary" onclick="clearAdd()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+      </svg>
+      <input id="search" type="text" placeholder="Search name, company, role, notes…" oninput="render()">
+    </div>
+    <div class="filter-panel">
+      <span class="filter-label">Filter:</span>
+      <div id="chips" style="display:flex;flex-wrap:wrap;gap:0.35rem;"></div>
+    </div>
+    <div class="sort-wrap">
+      <label>Sort:</label>
+      <select id="sort-sel" onchange="render()">
+        <option value="date-desc">Date: Newest first</option>
+        <option value="date-asc">Date: Oldest first</option>
+        <option value="name-asc">Name A → Z</option>
+        <option value="name-desc">Name Z → A</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="results-bar" id="results-bar"></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Company</th>
+          <th>Role</th>
+          <th>Connection Type</th>
+          <th>Date Met</th>
+          <th title="LinkedIn Thank You Sent">TY ✓</th>
+          <th>LinkedIn</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Edit Modal -->
+<div class="overlay hidden" id="overlay" onclick="overlayBg(event)">
+  <div class="modal" id="modal">
+    <div class="modal-hdr">
+      <h2>Edit Contact</h2>
+      <button class="modal-x" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-ftr">
+      <button class="btn btn-danger" onclick="delFromModal()">Delete Contact</button>
+      <div class="modal-ftr-r">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────
+const STORAGE_KEY = 'networking_tracker_v1';
+let contacts = [];
+let activeFilters = new Set();
+let editingId = null;
+
+// ── Utils ──────────────────────────────────────────────────────────
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function esc(v) {
+  if (v == null) return '';
+  return String(v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function getTags(type) {
+  if (!type) return [];
+  return type.split(',').map(t => t.trim()).filter(Boolean);
+}
+
+function getAllTags() {
+  const s = new Set();
+  contacts.forEach(c => getTags(c.connectionType).forEach(t => s.add(t)));
+  return [...s].sort();
+}
+
+function parseSortKey(dateStr) {
+  if (!dateStr) return 0;
+  const s = dateStr.trim();
+  // Full parseable date
+  const d = new Date(s);
+  if (!isNaN(d) && d.getFullYear() > 2000) return d.getTime();
+  // M/D format → assume 2026
+  const md = s.match(/^(\d{1,2})\/(\d{1,2})$/);
+  if (md) return new Date(2026, +md[1] - 1, +md[2]).getTime();
+  // Month name → first of that month, 2026
+  const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  const mo = months[s.slice(0, 3).toLowerCase()];
+  if (mo !== undefined) return new Date(2026, mo, 1).getTime();
+  return 0;
+}
+
+// ── Storage ────────────────────────────────────────────────────────
+function load() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try { contacts = JSON.parse(raw); return; } catch (e) {}
+  }
+  contacts = STARTER_DATA;
+  save();
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts));
+}
+
+// ── Render ─────────────────────────────────────────────────────────
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const sortVal = document.getElementById('sort-sel').value;
+
+  let list = contacts.filter(c => {
+    if (q) {
+      const hay = [c.name, c.currentCompany, c.pastCompanies, c.role, c.notes, c.connectionType]
+        .join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    if (activeFilters.size > 0) {
+      const tags = getTags(c.connectionType);
+      if (![...activeFilters].every(f => tags.includes(f))) return false;
+    }
+    return true;
+  });
+
+  list.sort((a, b) => {
+    if (sortVal === 'date-desc') return parseSortKey(b.dateMet) - parseSortKey(a.dateMet);
+    if (sortVal === 'date-asc')  return parseSortKey(a.dateMet) - parseSortKey(b.dateMet);
+    if (sortVal === 'name-asc')  return (a.name || '').localeCompare(b.name || '');
+    if (sortVal === 'name-desc') return (b.name || '').localeCompare(a.name || '');
+    return 0;
+  });
+
+  const total = contacts.length;
+  document.getElementById('hdr-count').textContent =
+    `${total} contact${total !== 1 ? 's' : ''}`;
+
+  const rb = document.getElementById('results-bar');
+  if (q || activeFilters.size > 0) {
+    rb.textContent = `Showing ${list.length} of ${total} contacts`;
+  } else {
+    rb.textContent = `${total} contact${total !== 1 ? 's' : ''} total`;
+  }
+
+  renderChips();
+
+  const tbody = document.getElementById('tbody');
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="empty">${
+      total === 0
+        ? 'No contacts yet — add your first contact above.'
+        : 'No contacts match your search or filters.'
+    }</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(c => {
+    const tags = getTags(c.connectionType);
+    const tagHtml = tags.length
+      ? tags.map(t => `<span class="ctag">${esc(t)}</span>`).join('')
+      : '<span class="dash">—</span>';
+
+    const ty = c.thankYouSent
+      ? `<button class="ty-btn ty-yes" data-id="${c.id}" title="Thank you sent — click to toggle">✓</button>`
+      : `<button class="ty-btn ty-no"  data-id="${c.id}" title="Not sent — click to toggle">○</button>`;
+
+    const li = c.linkedinUrl
+      ? `<a class="li-link" href="${esc(c.linkedinUrl)}" target="_blank" rel="noopener noreferrer">
+           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+           </svg>View
+         </a>`
+      : '<span class="dash">—</span>';
+
+    const contactInfo = [c.email, c.phone].filter(Boolean).join(' · ');
+    const notesEsc = esc(c.notes);
+
+    return `<tr>
+      <td class="name-cell">
+        <div class="name">${esc(c.name)}</div>
+        ${contactInfo ? `<div class="info">${esc(contactInfo)}</div>` : ''}
+      </td>
+      <td class="company-cell">
+        <div class="cur">${esc(c.currentCompany) || '<span class="dash">—</span>'}</div>
+        ${c.pastCompanies ? `<div class="past">prev: ${esc(c.pastCompanies)}</div>` : ''}
+      </td>
+      <td>${esc(c.role) || '<span class="dash">—</span>'}</td>
+      <td><div class="tag-list">${tagHtml}</div></td>
+      <td style="white-space:nowrap">${esc(c.dateMet) || '<span class="dash">—</span>'}</td>
+      <td>${ty}</td>
+      <td>${li}</td>
+      <td><span class="notes-text" title="${notesEsc}">${notesEsc || '<span class="dash">—</span>'}</span></td>
+      <td class="action-cell">
+        <button class="icon-btn" data-edit="${c.id}">Edit</button>
+        <button class="icon-btn del" data-del="${c.id}">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderChips() {
+  const container = document.getElementById('chips');
+  container.innerHTML = '';
+  getAllTags().forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (activeFilters.has(t) ? ' active' : '');
+    btn.textContent = t;
+    btn.addEventListener('click', () => {
+      if (activeFilters.has(t)) activeFilters.delete(t);
+      else activeFilters.add(t);
+      render();
+    });
+    container.appendChild(btn);
+  });
+}
+
+// ── Event delegation for table ─────────────────────────────────────
+document.getElementById('tbody').addEventListener('click', e => {
+  const tyBtn = e.target.closest('[data-id]');
+  const editBtn = e.target.closest('[data-edit]');
+  const delBtn = e.target.closest('[data-del]');
+  if (tyBtn) toggleTY(tyBtn.dataset.id);
+  if (editBtn) openEdit(editBtn.dataset.edit);
+  if (delBtn) deleteContact(delBtn.dataset.del);
+});
+
+// ── Add form ───────────────────────────────────────────────────────
+function toggleAdd() {
+  const body = document.getElementById('add-body');
+  const toggle = document.getElementById('add-toggle');
+  const open = body.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+  if (open) setTimeout(() => document.getElementById('a-name').focus(), 50);
+}
+
+function clearAdd() {
+  ['a-name','a-company','a-past','a-role','a-email','a-phone','a-linkedin','a-type','a-date','a-notes']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('a-ty').checked = false;
+}
+
+function addContact() {
+  const name = document.getElementById('a-name').value.trim();
+  if (!name) {
+    const el = document.getElementById('a-name');
+    el.focus();
+    el.style.borderColor = '#dc2626';
+    setTimeout(() => el.style.borderColor = '', 2000);
+    return;
+  }
+  contacts.unshift({
+    id: uid(),
+    name,
+    currentCompany: document.getElementById('a-company').value.trim(),
+    pastCompanies:  document.getElementById('a-past').value.trim(),
+    role:           document.getElementById('a-role').value.trim(),
+    email:          document.getElementById('a-email').value.trim(),
+    phone:          document.getElementById('a-phone').value.trim(),
+    linkedinUrl:    document.getElementById('a-linkedin').value.trim(),
+    connectionType: document.getElementById('a-type').value.trim(),
+    dateMet:        document.getElementById('a-date').value.trim(),
+    thankYouSent:   document.getElementById('a-ty').checked,
+    notes:          document.getElementById('a-notes').value.trim(),
+  });
+  save();
+  clearAdd();
+  // collapse form
+  const body = document.getElementById('add-body');
+  if (body.classList.contains('open')) toggleAdd();
+  render();
+}
+
+// ── Contact actions ────────────────────────────────────────────────
+function toggleTY(id) {
+  const c = contacts.find(x => x.id === id);
+  if (!c) return;
+  c.thankYouSent = !c.thankYouSent;
+  save(); render();
+}
+
+function deleteContact(id) {
+  const c = contacts.find(x => x.id === id);
+  if (!c || !confirm(`Delete ${c.name}? This cannot be undone.`)) return;
+  contacts = contacts.filter(x => x.id !== id);
+  save(); render();
+}
+
+// ── Edit Modal ─────────────────────────────────────────────────────
+function openEdit(id) {
+  const c = contacts.find(x => x.id === id);
+  if (!c) return;
+  editingId = id;
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="fg">
+      <label>Name *</label>
+      <input id="e-name" type="text" value="${esc(c.name)}">
+    </div>
+    <div class="fg">
+      <label>Current Company</label>
+      <input id="e-company" type="text" value="${esc(c.currentCompany)}">
+    </div>
+    <div class="fg">
+      <label>Past Companies</label>
+      <input id="e-past" type="text" value="${esc(c.pastCompanies)}">
+    </div>
+    <div class="fg">
+      <label>Role / Title</label>
+      <input id="e-role" type="text" value="${esc(c.role)}">
+    </div>
+    <div class="fg">
+      <label>Email</label>
+      <input id="e-email" type="email" value="${esc(c.email)}">
+    </div>
+    <div class="fg">
+      <label>Phone</label>
+      <input id="e-phone" type="tel" value="${esc(c.phone)}">
+    </div>
+    <div class="fg">
+      <label>LinkedIn URL</label>
+      <input id="e-linkedin" type="url" value="${esc(c.linkedinUrl)}">
+    </div>
+    <div class="fg">
+      <label>Connection Type</label>
+      <input id="e-type" type="text" value="${esc(c.connectionType)}">
+    </div>
+    <div class="fg">
+      <label>Date Met</label>
+      <input id="e-date" type="text" value="${esc(c.dateMet)}">
+    </div>
+    <div class="fg full">
+      <label>Notes</label>
+      <textarea id="e-notes">${esc(c.notes)}</textarea>
+    </div>
+    <div class="fg full">
+      <div class="chk-row">
+        <input id="e-ty" type="checkbox" ${c.thankYouSent ? 'checked' : ''}>
+        <label for="e-ty">LinkedIn Thank You sent</label>
+      </div>
+    </div>`;
+
+  document.getElementById('overlay').classList.remove('hidden');
+  setTimeout(() => document.getElementById('e-name').focus(), 50);
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.add('hidden');
+  editingId = null;
+}
+
+function overlayBg(e) {
+  if (e.target === document.getElementById('overlay')) closeModal();
+}
+
+function saveEdit() {
+  if (!editingId) return;
+  const name = document.getElementById('e-name').value.trim();
+  if (!name) {
+    const el = document.getElementById('e-name');
+    el.style.borderColor = '#dc2626';
+    el.focus();
+    return;
+  }
+  const idx = contacts.findIndex(x => x.id === editingId);
+  if (idx < 0) return;
+  contacts[idx] = {
+    ...contacts[idx],
+    name,
+    currentCompany: document.getElementById('e-company').value.trim(),
+    pastCompanies:  document.getElementById('e-past').value.trim(),
+    role:           document.getElementById('e-role').value.trim(),
+    email:          document.getElementById('e-email').value.trim(),
+    phone:          document.getElementById('e-phone').value.trim(),
+    linkedinUrl:    document.getElementById('e-linkedin').value.trim(),
+    connectionType: document.getElementById('e-type').value.trim(),
+    dateMet:        document.getElementById('e-date').value.trim(),
+    thankYouSent:   document.getElementById('e-ty').checked,
+    notes:          document.getElementById('e-notes').value.trim(),
+  };
+  save();
+  closeModal();
+  render();
+}
+
+function delFromModal() {
+  if (!editingId) return;
+  const id = editingId;
+  closeModal();
+  setTimeout(() => deleteContact(id), 80);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ── Starter data ───────────────────────────────────────────────────
+const STARTER_DATA = [
+  {
+    id: uid(), name: 'Lauren Hasson',
+    currentCompany: 'Her own company', pastCompanies: 'Bottle Rocket',
+    role: 'Speaker, SWE', email: '', phone: '', linkedinUrl: '',
+    connectionType: 'DTech speaker', dateMet: 'Feb', thankYouSent: true,
+    notes: 'Met in person, keynote speaker, hackathons',
+  },
+  {
+    id: uid(), name: 'Matt Jaynes',
+    currentCompany: 'Joby Aviation', pastCompanies: '',
+    role: 'Engineer', email: '', phone: '', linkedinUrl: '',
+    connectionType: 'Andrew, DSV', dateMet: '5/18', thankYouSent: true,
+    notes: '',
+  },
+  {
+    id: uid(), name: 'Alyssa Ting',
+    currentCompany: 'YouTube/Google', pastCompanies: '',
+    role: 'PM', email: '', phone: '(984) 298-4565', linkedinUrl: '',
+    connectionType: 'DTech, DSV', dateMet: '5/19', thankYouSent: true,
+    notes: 'Sent thank you on TEXT',
+  },
+  {
+    id: uid(), name: 'Alejandro Ortega',
+    currentCompany: 'YouTube/Google', pastCompanies: '',
+    role: 'SWE', email: '', phone: '',
+    linkedinUrl: 'https://www.linkedin.com/in/413j4ndr0/',
+    connectionType: 'DSV', dateMet: '5/19', thankYouSent: true,
+    notes: '',
+  },
+  {
+    id: uid(), name: 'Aman Singh',
+    currentCompany: 'YouTube/Google', pastCompanies: '',
+    role: 'SWE', email: '', phone: '', linkedinUrl: '',
+    connectionType: 'DSV', dateMet: '5/19', thankYouSent: true,
+    notes: '',
+  },
+  {
+    id: uid(), name: 'Rachel Bransom',
+    currentCompany: 'YouTube/Google', pastCompanies: '',
+    role: 'SWE', email: '', phone: '',
+    linkedinUrl: 'https://www.linkedin.com/in/rachel-bransom/',
+    connectionType: 'DSV', dateMet: '5/19', thankYouSent: true,
+    notes: '',
+  },
+  {
+    id: uid(), name: 'Kai Tang',
+    currentCompany: 'YouTube/Google', pastCompanies: '',
+    role: 'SWE', email: '', phone: '',
+    linkedinUrl: 'https://www.linkedin.com/in/kt276/',
+    connectionType: 'DTech, DSV', dateMet: '5/19', thankYouSent: true,
+    notes: 'Duke Student Intern at YT',
+  },
+  {
+    id: uid(), name: 'Shruti Haldea',
+    currentCompany: 'Stealth Startup', pastCompanies: 'Apple, Sonos',
+    role: 'PM, Marketing', email: '', phone: '',
+    linkedinUrl: 'https://www.linkedin.com/in/shruti-haldea/',
+    connectionType: 'Duke', dateMet: '5/19', thankYouSent: true,
+    notes: '',
+  },
+];
+
+// ── Init ───────────────────────────────────────────────────────────
+load();
+render();
+</script>
+</body>
+</html>
